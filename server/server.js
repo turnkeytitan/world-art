@@ -17,6 +17,16 @@ app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 
+app.get("/api/artists", async (request, response) => {
+  const url = `${museumApi}/en/search/advanced/terms?field=involvedMaker&q=`;
+  let res = null;
+  try {
+    res = await axios.get(url);
+  } catch (error) {
+    console.error("Something happened with the request...", error);
+  }
+  response.json(res.data);
+});
 app.get("/api/artists/:artist", async (request, response) => {
   const artist = request.params.artist;
   const url = `${museumApi}/en/search/advanced/terms?field=involvedMaker&q=${artist}`;
@@ -24,7 +34,7 @@ app.get("/api/artists/:artist", async (request, response) => {
   try {
     res = await axios.get(url);
   } catch (error) {
-    console.error("Something happened with the request", error);
+    console.error("Something happened with the request...", error);
   }
   response.json(res.data);
 });

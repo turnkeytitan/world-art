@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Artist } from "@/lib/definitions";
 import { getArtistList } from "@/lib/data";
@@ -12,7 +12,6 @@ function Home() {
     });
   };
   const debouced = debounce(getArtists, 500);
-  useEffect(() => {}, []);
   const [artists, setArtists] = useState<Artist[]>([]);
   return (
     <div className="flex flex-col justify-center items-center gap-8">
@@ -22,15 +21,19 @@ function Home() {
           className="max-w-72"
           type="text"
           onChange={(e) => {
-            if (e.target.value !== "") {
-              debouced(e.target.value);
-            }
+            debouced(e.target.value);
           }}
         />
       </section>
-      {artists.map((artist) => (
-        <p key={artist.id}>{artist.name}</p>
-      ))}
+      <ul className="flex gap-4 flex-wrap px-10 justify-center">
+        {artists.map((artist) => (
+          <li
+            className="cursor-pointer"
+            key={artist.id}>
+            {artist.name}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
