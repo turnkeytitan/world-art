@@ -80,7 +80,7 @@ function Home() {
         </ul>
       )}
 
-      {artists.length > 0 ? (
+      {!(artists.length > 0) ? (
         <section className="flex flex-wrap justify-center items-baseline gap-8 mb-20">
           {pieces.map((piece) => (
             <Card key={piece.artworkId}>
