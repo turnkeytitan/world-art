@@ -3,12 +3,15 @@ import ListFav from "@/components/ui/ListFav";
 import { useEffect } from "react";
 
 function Favs() {
-  const email = localStorage.getItem("email");
-  const username = localStorage.getItem("username");
+  let email;
+  let username;
   useEffect(() => {
     if (!localStorage.getItem("userid")) {
       window.location.href = "/login";
     }
+
+    email = localStorage.getItem("email");
+    username = localStorage.getItem("username");
   }, []);
   return (
     <>
