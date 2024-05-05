@@ -20,6 +20,7 @@ function Home() {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [pieces, setPieces] = useState<Art[]>([]);
   useEffect(() => {
+    getArtists("");
     if (!localStorage.getItem("userid")) {
       window.location.href = "/login";
     }
@@ -85,7 +86,7 @@ function Home() {
         </ul>
       )}
 
-      {!(artists.length > 0) ? (
+      {!(artists.length > 0) && (
         <section className="flex flex-wrap justify-center items-baseline gap-8 mb-20">
           {pieces.map((piece) => (
             <Card key={piece.artworkId}>
@@ -111,9 +112,8 @@ function Home() {
             </Card>
           ))}
         </section>
-      ) : (
-        <p>No pieces found</p>
       )}
+      {!(artists.length > 0) && pieces && <p>No pieces found</p>}
     </div>
   );
 }

@@ -13,7 +13,7 @@ function Nav() {
           </li>
         </ul>
       </nav>
-      <p>USER</p>
+      <p>Icon</p>
     </header>
   );
 }

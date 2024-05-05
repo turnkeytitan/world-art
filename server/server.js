@@ -45,11 +45,12 @@ app.use(express.json());
 app.use(requestLogger);
 
 app.post("/api/login", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
   const { rows } =
-    await sql`SELECT * FROM users WHERE username = ${username} and password = ${password}`;
+    await sql`SELECT * FROM users WHERE username = ${username} and email = ${email} and password = ${password}`;
   if (rows.length) {
-    res.status(200).json({ success: true, message: "successful login" });
+    console.log(rows);
+    res.status(200).json({ success: true, data: {...rows[0]} });
   } else {
     res.status(401).json({ success: false, message: "incorrect credentals" });
   }

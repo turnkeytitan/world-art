@@ -22,16 +22,20 @@ const ListFav = () => {
             className="flex gap-6 items-center justify-between border-2 p-4 w-11/12 md:w-2/4 shadow-md"
             key={artworkId}>
             <img
-              className="object-contain"
+              className="flex-1"
               src={imageUrl}
               alt={`${title} by ${artist}`}
               width={50}
               height={50}
             />
-            <article className="flex flex-col max-w-96 items-end">
-              <h2 className="text-right">{title}</h2>
+            <article className="flex flex-col max-w-96 items-end info">
+              <h2 className="text-right text-xl font-extrabold">{title}</h2>
               <p className="text-right">{artist}</p>
-              <a className="text-right text-cyan-600" href={museumUrl}>Go to museum</a>
+              <a
+                className="text-right text-cyan-600"
+                href={museumUrl}>
+                Go to museum
+              </a>
             </article>
           </li>
         ))

@@ -23,7 +23,7 @@ export async function getFavorites(id: string): Promise<Art[]> {
   const res = await axios.get(url);
   return res.data;
 }
-export async function login(user: User): Promise<ResponseDTO<string>> {
+export async function login(user: User): Promise<ResponseDTO<Omit<User, "password">>> {
   const url = `${baseUrl}/login`;
   const res = await axios.post(url, user);
   return res.data;

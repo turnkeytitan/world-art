@@ -7,13 +7,16 @@ import { Button } from "./button";
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
+  const [email, setEmail] = useState("");
+
   const handleSubmit = async () => {
-    const response = await login({ username, password });
-    console.log(response.success);
+    const response = await login({ username, email, password });
+console.log(response);
 
     if (response.success) {
-      localStorage.setItem('userid', response.data);
+      localStorage.setItem("userid", response.data.id!);
+      localStorage.setItem("email", response.data.email);
+      localStorage.setItem("username", response.data.username);
       window.location.href = "/";
     }
   };
@@ -22,9 +25,15 @@ const LoginForm = () => {
       <Input
         type="username"
         name="username"
-        value={username}
         placeholder="Username"
         onChange={(e) => setUsername(e.target.value)}
+        required
+      />
+      <Input
+        type="email"
+        name="email"
+        placeholder="Email"
+        onChange={(e) => setEmail(e.target.value)}
         required
       />
       <Input
