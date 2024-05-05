@@ -1,4 +1,6 @@
+import ListFav from "@/components/ui/ListFav";
+
 function Favs() {
-  return <div>my favs</div>;
+  return <ListFav />;
 }
 export default Favs;

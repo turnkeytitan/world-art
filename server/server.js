@@ -14,13 +14,23 @@ const requestLogger = (request, response, next) => {
   next();
 };
 
-function itemProperties(artObject) {
+function apiProperties(artObject) {
   const item = {
     artworkId: artObject.id,
     title: artObject.title,
     artist: artObject.principalOrFirstMaker,
     imageUrl: artObject.webImage.url,
     museumUrl: artObject.links.web,
+  };
+  return item;
+}
+function dbProperties({ artwork_id, title, artist, image_url, link_to_museum }) {
+  const item = {
+    artworkId: artwork_id,
+    title: title,
+    artist,
+    imageUrl: image_url,
+    museumUrl: link_to_museum,
   };
   return item;
 }
@@ -70,7 +80,7 @@ app.get("/api/art/:artist", async (req, res) => {
   const url = `${museumApi}/api/nl/collection?key=${museumKey}&involvedMaker=${artist}`;
   try {
     const art = await axios.get(url);
-    const items = art.data.artObjects.filter(hasImage).map(itemProperties);
+    const items = art.data.artObjects.filter(hasImage).map(apiProperties);
     res.json(items);
   } catch (error) {
     console.error("Error fetching artworks:", error);
@@ -78,11 +88,18 @@ app.get("/api/art/:artist", async (req, res) => {
   }
 });
 
-app.get("/api/art/:id", async (req, res) => {
+app.get("/api/favs/:id", async (req, res) => {
   const { id } = req.params;
+  console.log("ASDFASDF");
   try {
-    const { rows } = await sql`SELECT * FROM favorites WHERE user_id = ${id}`;
-    res.json(rows);
+    let client = await sql.connect();
+    const { rows } = await client.query("SELECT * FROM favorites WHERE user_id = $1", [
+      id,
+    ]);
+    const query = rows.map(dbProperties);
+    console.log(query);
+    client.release();
+    res.json(query);
   } catch (error) {
     console.error("Error fetching artworks:", error);
     res.status(500).json({ error: "Internal server error" });

@@ -18,8 +18,8 @@ export async function setFavorite(piece: Art): Promise<Message | AxiosError> {
   const res = await axios.post(url, piece);
   return res.data;
 }
-export async function getFavorites(id: string): Promise<any> {
-  const url = `${baseUrl}/art/${id}`;
-  const res = await axios.post(url);
+export async function getFavorites(id: string): Promise<Art[]> {
+  const url = `${baseUrl}/favs/${id}`;
+  const res = await axios.get(url);
   return res.data;
 }
