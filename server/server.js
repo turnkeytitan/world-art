@@ -16,23 +16,32 @@ const requestLogger = (request, response, next) => {
 
 function itemProperties(artObject) {
   const item = {
-    id: artObject.id,
+    artworkId: artObject.id,
     title: artObject.title,
     artist: artObject.principalOrFirstMaker,
     imageUrl: artObject.webImage.url,
     museumUrl: artObject.links.web,
   };
-  return item
+  return item;
 }
 
 function hasImage(artObject) {
-  return !!artObject.hasImage
+  return !!artObject.hasImage;
 }
 
 app.use(express.static("out"));
 app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  if (username === "usuario" && password === "contraseña") {
+    res.status(200).json({ message: "Login exitoso" });
+  } else {
+    res.status(401).json({ message: "Credenciales incorrectas" });
+  }
+});
 
 app.get("/api/artists", async (request, response) => {
   const url = `${museumApi}/en/search/advanced/terms?field=involvedMaker&q=`;
@@ -65,6 +74,48 @@ app.get("/api/art/:artist", async (req, res) => {
     res.json(items);
   } catch (error) {
     console.error("Error fetching artworks:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/api/art/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { rows } = await sql`SELECT * FROM favorites WHERE user_id = ${id}`;
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching artworks:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/art", async (req, res) => {
+  const piece = { ...req.body };
+  try {
+    let client = await sql.connect();
+    const { rows } = await client.query(
+      "SELECT * FROM favorites WHERE artwork_id = $1 AND user_id = $2",
+      [piece.artworkId, piece.userId]
+    );
+    if (!rows.length) {
+      await client.query(
+        "INSERT INTO favorites(artwork_id, title, artist, image_url, link_to_museum, user_id) VALUES ($1, $2, $3, $4, $5, $6)",
+        [
+          piece.artworkId,
+          piece.title,
+          piece.artist,
+          piece.imageUrl,
+          piece.museumUrl,
+          piece.userId,
+        ]
+      );
+      res.status(200).json({ message: "Successfuly added" });
+    } else {
+      res.status(409).json({ message: "Already added to your favorites" });
+    }
+    client.release();
+  } catch (error) {
+    console.error("Error handling artworks:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

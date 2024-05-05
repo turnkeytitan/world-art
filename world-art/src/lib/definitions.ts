@@ -5,16 +5,15 @@ export type Artist = {
 
 export type Art = {
   id: number;
+  artworkId: string;
   title: string;
   artist: string;
   imageUrl?: string;
   museumUrl?: string;
+  userId?: string;
 };
 
-// Define type for the favorites entity
-export type Favorite = {
-  id: number;
-  userId: number;
-  artId: number;
-  timestamp: Date;
-};
+export type Message = {
+  message: string
+}
+

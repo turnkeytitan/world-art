@@ -1,5 +1,5 @@
-import axios from "axios";
-import { Art, Artist } from "./definitions";
+import axios, { AxiosError } from "axios";
+import { Art, Artist, Message } from "./definitions";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACK;
 
@@ -11,5 +11,15 @@ export async function getArtistList(artist: string): Promise<Artist[]> {
 export async function getArtByArtist(artist: string): Promise<Art[]> {
   const url = `${baseUrl}/art/${artist}`;
   const res = await axios.get(url);
+  return res.data;
+}
+export async function setFavorite(piece: Art): Promise<Message | AxiosError> {
+  const url = `${baseUrl}/art`;
+  const res = await axios.post(url, piece);
+  return res.data;
+}
+export async function getFavorites(id: string): Promise<any> {
+  const url = `${baseUrl}/art/${id}`;
+  const res = await axios.post(url);
   return res.data;
 }

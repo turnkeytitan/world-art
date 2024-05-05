@@ -10,11 +10,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Art, Artist } from "@/lib/definitions";
-import { getArtByArtist, getArtistList } from "@/lib/data";
+import { getArtByArtist, getArtistList, setFavorite } from "@/lib/data";
 import { debounce } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 function Home() {
+  const { toast } = useToast();
   const getArtists = (artists: string) => {
     getArtistList(artists).then((list) => {
       setArtists(list);
@@ -26,6 +29,26 @@ function Home() {
       setPieces(list);
       setArtists([]);
     });
+  };
+  const handleFavorite = (piece: Art) => {
+    localStorage.setItem("userid", "2");
+    const userId = localStorage.getItem("userid");
+    userId && (piece.userId = userId);
+    setFavorite(piece)
+      .then((res) => {
+        toast({
+          variant: "successful",
+          title: "Yayyy!!!",
+          description: res.message,
+        });
+      })
+      .catch((res) => {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: res.response.data.message,
+        });
+      });
   };
   const debouced = debounce(getArtists, 500);
   const [artists, setArtists] = useState<Artist[]>([]);
@@ -56,10 +79,11 @@ function Home() {
           ))}
         </ul>
       )}
-      {artists ? (
+
+      {artists.length > 0 ? (
         <section className="flex flex-wrap justify-center items-baseline gap-8 mb-20">
           {pieces.map((piece) => (
-            <Card key={piece.id}>
+            <Card key={piece.artworkId}>
               <CardHeader>
                 <CardTitle className="text-center">{piece.title}</CardTitle>
                 <CardDescription className="text-center">
@@ -76,12 +100,15 @@ function Home() {
               </CardContent>
               <CardFooter className="flex justify-between gap-8">
                 <a href={piece.museumUrl}>Go to site</a>
-                <Button>Add to favorites</Button>
+                <Toaster />
+                <Button onClick={() => handleFavorite(piece)}>Add to favorites</Button>
               </CardFooter>
             </Card>
           ))}
         </section>
-      ): (<p>No pieces found</p>)}
+      ) : (
+        <p>No pieces found</p>
+      )}
     </div>
   );
 }
