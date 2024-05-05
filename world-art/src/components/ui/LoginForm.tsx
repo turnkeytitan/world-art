@@ -11,7 +11,6 @@ const LoginForm = () => {
 
   const handleSubmit = async () => {
     const response = await login({ username, email, password });
-console.log(response);
 
     if (response.success) {
       localStorage.setItem("userid", response.data.id!);

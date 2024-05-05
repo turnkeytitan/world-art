@@ -1,3 +1,4 @@
+'use client'
 import Link from "next/link";
 function Nav() {
   return (
@@ -13,7 +14,14 @@ function Nav() {
           </li>
         </ul>
       </nav>
-      <p>Icon</p>
+      <p
+        className="cursor-pointer"
+        onClick={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+        }}>
+        Log out
+      </p>
     </header>
   );
 }
