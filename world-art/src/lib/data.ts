@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Art, Artist, Message } from "./definitions";
+import { Art, Artist, Message, ResponseDTO, User } from "./definitions";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACK;
 
@@ -21,5 +21,10 @@ export async function setFavorite(piece: Art): Promise<Message | AxiosError> {
 export async function getFavorites(id: string): Promise<Art[]> {
   const url = `${baseUrl}/favs/${id}`;
   const res = await axios.get(url);
+  return res.data;
+}
+export async function login(user: User): Promise<ResponseDTO<string>> {
+  const url = `${baseUrl}/login`;
+  const res = await axios.post(url, user);
   return res.data;
 }

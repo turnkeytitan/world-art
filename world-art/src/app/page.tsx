@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -17,6 +17,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
 function Home() {
+  const [artists, setArtists] = useState<Artist[]>([]);
+  const [pieces, setPieces] = useState<Art[]>([]);
+  useEffect(() => {
+    if (!localStorage.getItem("userid")) {
+      window.location.href = "/login";
+    }
+  }, []);
   const { toast } = useToast();
   const getArtists = (artists: string) => {
     getArtistList(artists).then((list) => {
@@ -51,8 +58,6 @@ function Home() {
       });
   };
   const debouced = debounce(getArtists, 500);
-  const [artists, setArtists] = useState<Artist[]>([]);
-  const [pieces, setPieces] = useState<Art[]>([]);
   return (
     <div className="flex flex-col justify-center items-center gap-8">
       <section className=" flex justify-center items-center gap-8">

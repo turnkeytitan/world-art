@@ -14,6 +14,16 @@ export type Art = {
 };
 
 export type Message = {
-  message: string
-}
+  message: string;
+};
 
+export type User = {
+  id?: string;
+  username: string;
+  password: string;
+};
+
+export interface ResponseDTO<T> extends Message {
+  success: boolean;
+  data: T;
+};

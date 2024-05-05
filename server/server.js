@@ -44,12 +44,14 @@ app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 
-app.post("/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
-  if (username === "usuario" && password === "contraseña") {
-    res.status(200).json({ message: "Login exitoso" });
+  const { rows } =
+    await sql`SELECT * FROM users WHERE username = ${username} and password = ${password}`;
+  if (rows.length) {
+    res.status(200).json({ success: true, message: "successful login" });
   } else {
-    res.status(401).json({ message: "Credenciales incorrectas" });
+    res.status(401).json({ success: false, message: "incorrect credentals" });
   }
 });
 
@@ -90,14 +92,12 @@ app.get("/api/art/:artist", async (req, res) => {
 
 app.get("/api/favs/:id", async (req, res) => {
   const { id } = req.params;
-  console.log("ASDFASDF");
   try {
     let client = await sql.connect();
     const { rows } = await client.query("SELECT * FROM favorites WHERE user_id = $1", [
       id,
     ]);
     const query = rows.map(dbProperties);
-    console.log(query);
     client.release();
     res.json(query);
   } catch (error) {
